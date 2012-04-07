@@ -59,6 +59,19 @@ abstract class Sprite
 
                 return self::htmlElement('input', $src, $attributes, $sprite_nr);
         }
+        
+        /**
+         * creates image input HTML element with CSS sprite data
+         * @param type $src source of image by default (no :hover etc.)
+         * @param type $attributes HTML attributes, eg. array('alt' => 'img alt text')
+         * @param type $sprite_nr number of sprite image should be placed in or -1 for auto assignment
+         * @return string HTML element
+         * @throws SpriteException 
+         */
+        public static function anchor($src, $attributes = array(), $sprite_nr = -1)
+        {
+                return self::htmlElement('a', $src, $attributes, $sprite_nr);
+        }
 
         protected static $sprite_existing = true;
         
