@@ -1,0 +1,42 @@
+Installation
+=======================
+
+- Copy PHPAutoSprites directory into your project
+
+- Open PHPAutoSprites/sprites.php and change configuration.
+
+- Set permissions for PHPAutoSprites/data (read and write) and SPRITE_DIR 
+so that PHP has read and write access
+
+- Include PHPAutoSprites/sprites.php into your projects files
+
+- Now you can use PHPAutoSprites:
+
+Instead of:
+
+<head>
+	<title>No sprites</title>
+</head>
+<body>
+	<img src="images/img.png" alt="an_image" />
+</body>
+
+do:
+<?php require_once('PHPAutoSprites/sprites.php')?>
+
+<head>
+	<title>With sprites</title>
+	<?php echo Sprite::style()?>
+</head>
+<body>
+	<?php echo Sprite::image('images/img.png', array(
+		'alt' => 'an_image'))?>
+</body>
+
+
+You can also use Sprite::input for image inputs or any other HTML element 
+via Sprite::htmlElement
+
+If you want to have hover effect, place the hover image into the same directory
+like the default image and append _hover onto the file name. 
+If your file name is image.png, the hover image will be image_hover.png.

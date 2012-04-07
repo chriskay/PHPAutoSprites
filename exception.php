@@ -1,8 +1,5 @@
 <?php
-namespace PHPAutoSprites
+class AutoSpritesException extends \Exception
 {
-        class AutoSpritesException extends \Exception
-        {
 
-        }
 }
