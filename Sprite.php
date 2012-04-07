@@ -1,5 +1,6 @@
 <?php
 require_once('Exception.php');
+require_once('SpriteCreator.php');
 
 abstract class Sprite
 {
