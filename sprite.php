@@ -4,26 +4,42 @@ require_once('exception.php');
 abstract class Sprite
 {
         /* Configuration */
-        const IMAGE_DIR = '../images';
-        const SPRITE_DIR = 'sprites'; // IMAGE_DIR > SPRITE_DIR
-        const SPRITE_URL = 'images/sprites/'; // http://mywebsite.com/images/sprites
+        const IMAGE_DIR = '../images'; // path to image dir relative to directory of sprite.php
+        const SPRITE_DIR = 'sprites'; // path where sprites should be saved relative to IMAGE_DIR
+        const SPRITE_URL = 'images/sprites/'; // URL to sprites , eg. http://mywebsite.com/images/sprites
 
-        const DATA_DIR = 'data';                
-        const TRACK_FILE = 'tracks.json';
-        const SPRITE_FILE = 'sprites.json'; // DATA_DIR > SPRITE_FILE               
+        const DATA_DIR = 'data'; // path to data dir relative to directory of sprite.php
+        const TRACK_FILE = 'tracks.json'; // name of track file in DATA_DIR
+        const SPRITE_FILE = 'sprites.json'; // name of sprite info file in DATA_DIR         
 
-        const PNG_COMPRESSION = 9;
-        const MAX_SPRITE_HEIGHT = 200;
+        const PNG_COMPRESSION = 9; // how much to compress sprite pngs from 0 (no compression) to 9
+        const MAX_SPRITE_HEIGHT = 200; // maximal height of sprites of auto assigned images
 
         protected static $pseudo_classes = array(
                 'active', 'hover'
         );
 
+        /**
+         * creates image HTML element with CSS sprite data
+         * @param type $src source of image by default (no :hover etc.)
+         * @param type $attributes HTML attributes, eg. array('alt' => 'img alt text')
+         * @param type $sprite_nr number of sprite image should be placed in or -1 for auto assignment
+         * @return string HTML element
+         * @throws AutoSpritesException 
+         */
         public static function image($src, $attributes = array(), $sprite_nr = -1)
         {
                 return self::htmlElement('div', $src, $attributes, $sprite_nr);
         }
 
+        /**
+         * creates image input HTML element with CSS sprite data
+         * @param type $src source of image by default (no :hover etc.)
+         * @param type $attributes HTML attributes, eg. array('alt' => 'img alt text')
+         * @param type $sprite_nr number of sprite image should be placed in or -1 for auto assignment
+         * @return string HTML element
+         * @throws AutoSpritesException 
+         */
         public static function input($src, $attributes = array(), $sprite_nr = -1)
         {
                 if(!isset($attributes['type']))
@@ -45,6 +61,16 @@ abstract class Sprite
         }
 
         protected static $sprite_existing = true;
+        
+        /**
+         * creates HTML element with CSS sprite data
+         * @param type $element tag name of element eg. 'div'
+         * @param type $src source of image by default (no :hover etc.)
+         * @param type $attributes HTML attributes, eg. array('alt' => 'img alt text')
+         * @param type $sprite_nr number of sprite image should be placed in or -1 for auto assignment
+         * @return string HTML element
+         * @throws AutoSpritesException 
+         */
         public static function htmlElement($element, $src, $attributes = array(), $sprite_nr = -1)
         {
                 self::trackImage($src, $sprite_nr);                        
@@ -95,7 +121,13 @@ abstract class Sprite
                 return $html;
         }
 
-        protected static function trackImage($src, $sprite_nr)
+        /**
+         * save image source and sprite nr in track file
+         * @param  $src image source
+         * @param int $sprite_nr number of sprite or -1 if a sprite should 
+         * be automatically assigned
+         */
+        protected static function trackImage($src, $sprite_nr = -1)
         {
                 $tracks = self::getFileContent(self::TRACK_FILE);
 
@@ -103,6 +135,11 @@ abstract class Sprite
                 self::setFileContent(self::TRACK_FILE, $tracks);
         }
 
+        /**
+         * get info about sprite position of an image via it's source
+         * @param string $src image source
+         * @return mixed sprite info array or false if no info exist
+         */
         protected static function getSpriteData($src)
         {
                 $sprites = self::getFileContent(self::SPRITE_FILE);
@@ -115,6 +152,10 @@ abstract class Sprite
                 return false;
         }
 
+        /**
+         * creates CSS sprite images
+         * @throws AutoSpritesException 
+         */
         protected static function createSprites()
         {
                 $counts = self::getFileContent(self::TRACK_FILE);
@@ -258,7 +299,17 @@ abstract class Sprite
                 }
         }
 
+        /**
+         * @var array remembers file content of files. So getFileContent
+         * needs to open file just once.
+         */
         protected static $file_memorization = array();
+        
+        /**
+         * get content from file
+         * @param string $file name of file in DATA_DIR
+         * @return array content
+         */
         protected static function getFileContent($file)
         {
                 if(!isset(self::$file_memorization[$file]))
@@ -295,6 +346,11 @@ abstract class Sprite
                 return self::$file_memorization[$file];
         }
 
+        /**
+         * saves content array json encoded in specified file
+         * @param string $file
+         * @param array $content 
+         */
         protected static function setFileContent($file, array $content)
         {
                 $file = __DIR__.DIRECTORY_SEPARATOR.self::DATA_DIR.DIRECTORY_SEPARATOR.$file;
@@ -306,6 +362,9 @@ abstract class Sprite
                 self::$file_memorization[$file] = $content;
         }
 
+        /**
+         * delete all sprites images created before that are older than 1 minute
+         */
         protected static function deleteSprites()
         {
                 $sprite_dir = __DIR__.DIRECTORY_SEPARATOR.self::IMAGE_DIR.DIRECTORY_SEPARATOR.self::SPRITE_DIR;
@@ -324,6 +383,10 @@ abstract class Sprite
                 }
         }
 
+        /**
+         * returns complete <style> tag with all the CSS data for all sprite images
+         * @return string <style> tag with CSS data
+         */
         public static function style()
         {
                 $html = '<style type="text/css">';
@@ -347,13 +410,23 @@ abstract class Sprite
                 return $html;
         }
 
-        protected static function getClassName($str)
+        /**
+         * return CSS class name for image source
+         * @param string $src image source
+         * @return string CSS class name
+         */
+        protected static function getClassName($src)
         {
-                $hash = md5(self::getSrcWithoutPseudoClass($str));
+                $hash = md5(self::getSrcWithoutPseudoClass($src));
                 $hash = 'sprite_'.substr($hash, 0, 10);
                 return $hash;
         }
 
+        /**
+         * returns CSS data for image defined by source
+         * @param string $src image source
+         * @return string minified CSS code 
+         */
         protected static function getCSS($src)
         {
                 $sprite = self::getSpriteData($src);
@@ -377,6 +450,12 @@ abstract class Sprite
                 return $css;
         }
 
+        /**
+         * adds pseudo class to file name
+         * @param string $src image source, eg. 'images/img.png'
+         * @param string $pseudoClass name of pseudo class, eg. 'hover'
+         * @return string file name with pseudo class, eg. 'images/img_hover.png' 
+         */
         protected function getSrcWithPseudoClass($src, $pseudoClass)
         {
                 if(empty($pseudoClass))
@@ -408,6 +487,11 @@ abstract class Sprite
                 return $src;
         }
 
+        /**
+         * get file name without pseudo class in it
+         * @param string $src eg. 'images/img_hover.png'
+         * @return string eg. 'images/img.png'
+         */
         protected function getSrcWithoutPseudoClass($src)
         {                        
                 $src_exploded = explode('/', $src);
@@ -424,6 +508,11 @@ abstract class Sprite
                 return $src;
         }
 
+        /**
+         * get pseudo class from file name
+         * @param type $src eg. 'images/image_hover.png'
+         * @return mixed pseudo class or false if no pseudo class was found, eg. 'hover'
+         */
         protected function getPseudoClass($src)
         {
                 $src_exploded = explode('/', $src);
