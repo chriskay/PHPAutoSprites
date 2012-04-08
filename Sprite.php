@@ -2,6 +2,10 @@
 require_once('Exception.php');
 require_once('SpriteCreator.php');
 
+if(!defined('__DIR__'))
+{
+        define('__DIR__', dirname(__FILE__));
+}
 abstract class Sprite
 {
         /* Configuration */
@@ -106,7 +110,15 @@ abstract class Sprite
                                 throw new SpriteException('Image '.$src.' could not be loaded.');
                         }
                         
-                        $html .= ' style="'.addslashes(self::getCSS($src)).'"';
+                        $html .= ' style="'.addslashes(self::getCSS($src));
+                        
+                        if(isset($attributes['style']))
+                        {
+                               $html .= $attributes['style'];
+                               unset($attributes['style']);
+                        }
+                        
+                        $html .= '"';
 
                         self::$sprite_existing = false;
                 }
@@ -383,7 +395,7 @@ abstract class Sprite
                                 background-position: -'.$sprite['x'].'px -'.$sprite['y'].'px;
                                 background-color: transparent;
                                 width: '.$sprite['width'].'px;
-                                height: '.$sprite['height'].'px';
+                                height: '.$sprite['height'].'px;';
                 }
 
                 $css = str_replace(array(

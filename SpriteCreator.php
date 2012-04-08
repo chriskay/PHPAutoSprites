@@ -176,6 +176,9 @@ class SpriteCreator
                 
                 $sprite = imagecreatetruecolor($spriteData['width'],$spriteData['height']);
                 
+                $transparent = imagecolorallocatealpha($sprite, 0, 0, 0, 127); 
+                imagefill($sprite, 0, 0, $transparent); 
+                
                 foreach($spriteData['positions'] as $position)
                 {
                         $x = $position['x'];
@@ -186,10 +189,11 @@ class SpriteCreator
                         imagecopyresampled($sprite, $image, $x, $y, 0, 0, $width, $height, $width, $height);
                 }
                 
+                imagealphablending($sprite, false);
+                imagesavealpha($sprite, true);
                 
-                
-                imagepng($sprite, $fileName);
-                
+                imagepng($sprite, $fileName);          
+                imagedestroy($sprite);
         }
 }
 ?>
