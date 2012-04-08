@@ -39,9 +39,9 @@ abstract class Sprite
          * @return string HTML element
          * @throws SpriteException 
          */
-        public static function image($src, $attributes = array(), $sprite_nr = -1)
+        public static function image($src, $attributes = array(), $sprite_id = null)
         {
-                return self::htmlElement('div', $src, $attributes, $sprite_nr);
+                return self::htmlElement('span', $src, $attributes, $sprite_id);
         }
 
         /**
@@ -52,7 +52,7 @@ abstract class Sprite
          * @return string HTML element
          * @throws SpriteException 
          */
-        public static function input($src, $attributes = array(), $sprite_nr = -1)
+        public static function input($src, $attributes = array(), $sprite_id = null)
         {
                 if(!isset($attributes['type']))
                 {
@@ -69,7 +69,7 @@ abstract class Sprite
                         $attributes['style'] = 'border-width: 0px;';
                 }
 
-                return self::htmlElement('input', $src, $attributes, $sprite_nr);
+                return self::htmlElement('input', $src, $attributes, $sprite_id);
         }
         
         /**
@@ -80,9 +80,9 @@ abstract class Sprite
          * @return string HTML element
          * @throws SpriteException 
          */
-        public static function anchor($src, $attributes = array(), $sprite_nr = -1)
+        public static function anchor($src, $attributes = array(), $sprite_id = null)
         {
-                return self::htmlElement('a', $src, $attributes, $sprite_nr);
+                return self::htmlElement('a', $src, $attributes, $sprite_id);
         }
 
         protected static $sprite_existing = true;
@@ -96,19 +96,17 @@ abstract class Sprite
          * @return string HTML element
          * @throws SpriteException 
          */
-        public static function htmlElement($element, $src, $attributes = array(), $sprite_nr = -1)
+        public static function htmlElement($element, $src, $attributes = array(), $sprite_id = null)
         {
                 $src = __DIR__.DIRECTORY_SEPARATOR.self::IMAGE_DIR.DIRECTORY_SEPARATOR.$src;
                 
-                
-
                 $sprite = self::getSpriteData($src);
 
                 $html = '<'.$element;
 
                 if(!$sprite)
                 {
-                        self::trackImage($src, $sprite_nr);
+                        self::trackImage($src, $sprite_id);
                         
                         self::createSprites();
 
@@ -164,15 +162,16 @@ abstract class Sprite
          * @param int $sprite_nr number of sprite or -1 if a sprite should 
          * be automatically assigned
          */
-        protected static function trackImage($src, $sprite_nr = -1)
+        protected static function trackImage($src, $sprite_id = null)
         {
                 $tracks = self::getFileContent(self::TRACK_FILE);
 
-                $tracks[$src] = $sprite_nr;
+                $tracks[$src] = $sprite_id;
                 self::setFileContent(self::TRACK_FILE, $tracks);
         }
 
         /**
+         * +ß
          * get info about sprite position of an image via it's source
          * @param string $src image source
          * @return mixed sprite info array or false if no info exist
