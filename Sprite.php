@@ -100,7 +100,7 @@ abstract class Sprite
         {
                 $src = __DIR__.DIRECTORY_SEPARATOR.self::IMAGE_DIR.DIRECTORY_SEPARATOR.$src;
                 
-                self::trackImage($src, $sprite_nr);                        
+                
 
                 $sprite = self::getSpriteData($src);
 
@@ -108,6 +108,8 @@ abstract class Sprite
 
                 if(!$sprite)
                 {
+                        self::trackImage($src, $sprite_nr);
+                        
                         self::createSprites();
 
                         $sprite = self::getSpriteData($src);

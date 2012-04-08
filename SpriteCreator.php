@@ -136,10 +136,10 @@ class SpriteCreator
                         if(($chosenBlock['x']+imagesx($image)) < $spriteWidth)
                         {
                                 $freeBlocks[] = array(
-                                    'x' => $chosenBlock['x']+imagesx($image),
+                                    'x' => $chosenBlock['x']+imagesx($image)+1,
                                     'y' => $chosenBlock['y'],
                                     'height' => imagesy($image)-1,
-                                    'width' => $spriteWidth-($chosenBlock['x']+imagesx($image))
+                                    'width' => $spriteWidth-($chosenBlock['x']+imagesx($image)+1)
                                 );
                         }
                         
