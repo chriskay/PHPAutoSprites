@@ -1,4 +1,7 @@
 <?php
+/**
+ * @author Christian Kilb 
+ */
 require_once('Exception.php');
 require_once('SpriteCreator.php');
 
@@ -6,6 +9,10 @@ if(!defined('__DIR__'))
 {
         define('__DIR__', dirname(__FILE__));
 }
+
+/**
+ * 
+ */
 abstract class Sprite
 {
         /* Configuration */
@@ -27,7 +34,7 @@ abstract class Sprite
         /**
          * creates image HTML element with CSS sprite data
          * @param type $src source of image by default (no :hover etc.)
-         * @param type $attributes HTML attributes, eg. array('alt' => 'img alt text')
+         * @param type $attributes HTML attributes, eg. array('title' => 'img title')
          * @param type $sprite_nr number of sprite image should be placed in or -1 for auto assignment
          * @return string HTML element
          * @throws SpriteException 

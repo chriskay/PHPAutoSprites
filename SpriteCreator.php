@@ -1,8 +1,16 @@
 <?php
+/**
+ * @author Christian Kilb 
+ */
 class SpriteCreator
 {
         protected $images = array();
         
+        /**
+         * add image to sprite
+         * @param string $image_src source of image
+         * @throws SpriteException 
+         */
         public function addImage($image_src)
         {
                 $info = getimagesize($image_src);
@@ -39,6 +47,11 @@ class SpriteCreator
                     'src' => $image_src);
         }
         
+        /**
+         * calculates and returns information about this sprite
+         * @return array containing width, height, images and their positions
+         * @throws SpriteException 
+         */
         public function getSpriteData()
         {
                 if(count($this->images) < 1)
@@ -147,6 +160,10 @@ class SpriteCreator
                 );
         }
         
+        /**
+         * returns sum of all image areas
+         * @return int sum of all image areas
+         */
         public function getPixelSum()
         {
                 $sum = 0;
@@ -159,6 +176,10 @@ class SpriteCreator
                 return $sum;
         }
         
+        /**
+         * returns image positions 
+         * @return array image positions
+         */
         public function positions()
         {
                 $spriteData = $this->getSpriteData();
@@ -170,6 +191,10 @@ class SpriteCreator
                 return $spriteData['positions'];
         }
         
+        /**
+         * saves sprite as png file
+         * @param string $fileName location of sprite png
+         */
         public function output($fileName)
         {
                 $spriteData = $this->getSpriteData();
